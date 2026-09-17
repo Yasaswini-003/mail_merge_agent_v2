@@ -415,13 +415,26 @@ def generate_certificates(
         # Use NAME if available for filename.
         # Otherwise use row number.
 
-        if "NAME" in df.columns:
+                # Use a Name column for the filename if available.
+        # The column check is case-insensitive.
+        # This does not affect placeholder matching.
+
+        name_column = next(
+            (
+                column
+                for column in df.columns
+                if str(column).strip().lower() == "name"
+            ),
+            None
+        )
+
+        if name_column:
 
             name = str(
-                row["NAME"]
+                row[name_column]
             ).strip()
 
-            if not name or name == "nan":
+            if not name or name.lower() == "nan":
 
                 name = f"Record_{index + 1}"
 
